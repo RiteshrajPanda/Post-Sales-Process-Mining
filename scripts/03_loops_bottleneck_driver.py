@@ -41,9 +41,7 @@ print(f"events={len(df):,}  cases={df[CASE].nunique():,}")
 print(f"org:group nulls: {df[GROUP].isna().sum()}  "
       f"distinct teams: {df[GROUP].nunique()}")
 
-# ======================================================================
 # Q3  BIGGEST REWORK LOOP (PING-PONG between teams)
-# ======================================================================
 print("\n" + "=" * 70)
 print("Q3  PING-PONG  (org:group handovers)")
 print("=" * 70)
@@ -95,9 +93,7 @@ print(f"Total ping-pong bounces across all cases: {total_bounces}")
 print(f"Cases with >=1 ping-pong bounce: "
       f"{sum(1 for p in team_path if any(p[i]==p[i+2] and p[i]!=p[i+1] for i in range(len(p)-2)))}")
 
-# ======================================================================
 # Q4  THE BOTTLENECK (longest waiting time per activity)
-# ======================================================================
 print("\n" + "=" * 70)
 print("Q4  BOTTLENECK  (sojourn time per activity)")
 print("=" * 70)
@@ -128,9 +124,7 @@ print(f"\n#1 bottleneck by LONGEST single wait : '{top_med}' "
 print(f"#1 bottleneck by TOTAL time lost     : '{top_total}' "
       f"({oper.loc[top_total,'total_days']:.0f} cumulative days, n={int(oper.loc[top_total,'n'])})")
 
-# ======================================================================
 # Q5  THE DRIVER (reassignments -> resolution time)
-# ======================================================================
 print("\n" + "=" * 70)
 print("Q5  DRIVER  reassignments vs resolution time")
 print("=" * 70)
@@ -171,9 +165,7 @@ print(piv.reindex(order)[[c for c in ["0","1","2","3+"] if c in piv.columns]].ro
 print("(Ladder rising left->right WITHIN each impact row = reassignment effect holds "
       "even at fixed severity.)")
 
-# ----------------------------------------------------------------------
 # VISUALS
-# ----------------------------------------------------------------------
 # Ping-pong chart (top pairs).
 fig, ax = plt.subplots(figsize=(8, 4.5))
 labels = [f"{sorted(p)[0]} <-> {sorted(p)[1]}" for p, _ in pp_sorted[:10]]

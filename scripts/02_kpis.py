@@ -26,12 +26,10 @@ if os.path.isdir(gv_bin) and gv_bin not in os.environ.get("PATH", ""):
 
 CASE = "case:concept:name"
 STATUS = "concept:name"          # Accepted / Completed / Queued / Unmatched
-SUB = "lifecycle:transition"     # In Progress / Resolved / Closed / ...
+SUB = "lifecycle:transition"     # In Progress / Resolved / Closed
 TS = "time:timestamp"
 
-# ----------------------------------------------------------------------
 # Load + build composite activity, preserving the XES trace order.
-# ----------------------------------------------------------------------
 df = pm4py.read_xes(LOG_PATH)
 df = df.reset_index(drop=True)
 df["evt_order"] = df.index                      # stable original order within the file
@@ -42,9 +40,7 @@ print(f"events={len(df):,}  cases={df[CASE].nunique():,}  activities={df['activi
 print("\nTop composite activities:")
 print(df["activity"].value_counts().head(12))
 
-# ----------------------------------------------------------------------
 # Per-case sequences (in trace order).
-# ----------------------------------------------------------------------
 g = df.groupby(CASE, sort=False)
 seq_status = g[STATUS].apply(list)              # ordered list of statuses per case
 seq_activity = g["activity"].apply(list)        # ordered list of composite activities
@@ -52,9 +48,7 @@ ts_min = g[TS].min()
 ts_max = g[TS].max()
 n_cases = len(seq_status)
 
-# ======================================================================
 # Q1  HAPPY-PATH CONFORMANCE
-# ======================================================================
 print("\n" + "=" * 70)
 print("Q1  HAPPY-PATH CONFORMANCE")
 print("=" * 70)
@@ -87,9 +81,7 @@ clean = ends_completed & ~reopened
 print(f"\nSoft conformance (ends Completed & never reopened): "
       f"{int(clean.sum()):,} / {n_cases:,} = {clean.mean():.1%}")
 
-# ======================================================================
 # Q2  REOPEN RATE  ->  FIRST-TIME-FIX RATE
-# ======================================================================
 print("\n" + "=" * 70)
 print("Q2  REOPEN RATE / FIRST-TIME-FIX")
 print("=" * 70)
@@ -113,9 +105,7 @@ reopen_n = seq_status.apply(reopen_count)
 print("\nReopen-count distribution (how many times a case bounced back):")
 print(reopen_n.value_counts().sort_index().head(10).to_string())
 
-# ======================================================================
 # THROUGHPUT-TIME DISTRIBUTION
-# ======================================================================
 print("\n" + "=" * 70)
 print("THROUGHPUT-TIME DISTRIBUTION (case duration)")
 print("=" * 70)
@@ -132,12 +122,10 @@ print(f"max    : {dur_days.max():8.1f} days")
 print(f"\nMean/median ratio: {dur_days.mean() / q[0.50]:.1f}x  "
       f"(why we report median, not mean)")
 
-# ======================================================================
 # REFINEMENT — "Completed" != "Resolved".  The status `Completed` also covers
 # `In Call` (agent on a phone call = mid-work, not a fix). The genuine
 # resolution markers are the sub-statuses Resolved / Closed. Recompute Q1/Q2
 # against that stricter, more defensible definition.
-# ======================================================================
 print("\n" + "=" * 70)
 print("REFINEMENT  resolution = sub-status in {Resolved, Closed} only")
 print("=" * 70)
