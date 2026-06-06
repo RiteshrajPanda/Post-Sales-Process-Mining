@@ -4,7 +4,7 @@ __pycache__/
 *.pyc
 .ipynb_checkpoints/
 
-# Data — raw logs are large; keep out of git (document source in README)
+# Data
 data/*.xes
 data/*.xes.gz
 data/*.gz
@@ -12,6 +12,3 @@ data/*.gz
 # OS
 Thumbs.db
 .DS_Store
-
-# Private working docs (not for the public portfolio repo)
-INTERVIEW-PREP.md
